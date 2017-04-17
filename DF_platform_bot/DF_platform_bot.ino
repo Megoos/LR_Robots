@@ -12,6 +12,9 @@ int Echo1 = 2;
 //US left
 int Trig2 = 11;
 int Echo2 = 10;
+//US right
+int Trig3=12;
+int Echo3=13;
 
 void Stop (){
   digitalWrite(in1, LOW);
@@ -49,6 +52,15 @@ void turn_R (int speed1, int speed2){
   analogWrite(enB,speed2);
   }  
 
+void turn_L (int speed1, int speed2){
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
+  analogWrite(enA,speed1);
+  analogWrite(enB,speed2);
+  }  
+  
 int USensor (int Trig, int Echo){
   digitalWrite(Trig, HIGH); 
   /* Подаем импульс на вход trig дальномера */
@@ -65,27 +77,45 @@ void setup() {
   pinMode(Trig2, OUTPUT); //инициируем как выход 
   pinMode(Echo2, INPUT); //инициируем как вход   
 
+  pinMode(Trig3, OUTPUT); //инициируем как выход 
+  pinMode(Echo3, INPUT); //инициируем как вход   
+
   for (int i = 3; i < 10; i++){
     pinMode(i, OUTPUT);
     }
 }
 
 void loop() {
-
- // Serial.println(USensor(Trig2,Echo2));
-if(USensor(Trig2,Echo2)<10){
-  turn_R(120,120);
-  }else{
-   if(USensor(Trig1,Echo1)<12){
-             fwd(150,150);
-             delay(700);
-             bwd(150,150);
-             delay(700);
-             Stop();
-         } else {
-              Stop();
-                 }
+// Serial.println(USensor(Trig2,Echo2));
+  if((USensor(Trig2,Echo2)<15)&&(USensor(Trig3,Echo3)<15))
+  {
+    fwd(150,150);
+    delay(40);
   }
-
+  else
+  {
+    if(USensor(Trig2,Echo2)<15)
+    {
+      turn_R(120,120);
+    }
+    else
+    {
+      if(USensor(Trig3,Echo3)<15)
+      {
+        turn_L(120,120);
+      }
+      else
+      {
+        if(USensor(Trig1,Echo1)<15)
+        {
+          bwd(150,150);
+        }
+        else
+        {
+          Stop();
+        }
+      }
+    }
+  }
   delay(1);
 }
